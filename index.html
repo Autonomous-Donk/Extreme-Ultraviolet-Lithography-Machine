@@ -6,6 +6,7 @@
     <title>光刻机技术详解 - 专业知识平台</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
@@ -22,55 +23,212 @@
                         sans: ['Inter', 'system-ui', 'sans-serif'],
                         serif: ['Georgia', 'serif']
                     },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
                 }
             }
         }
     </script>
-    <style type="text/tailwindcss">
-        @layer utilities {
-            .text-shadow {
-                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    <style type="text/css">
+        :root {
+            --primary: #165DFF;
+            --secondary: #0E2E8B;
+            --accent: #36CFC9;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        .text-shadow {
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .bg-gradient-blue {
+            background: linear-gradient(135deg, #165DFF 0%, #0E2E8B 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .nav-link.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .verification-success {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+        }
+        
+        .formula-box {
+            background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .tech-timeline li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .tech-timeline li:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--primary);
+        }
+        
+        .slider-container {
+            background: #E5E7EB;
+            border-radius: 9999px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slider-track {
+            background: linear-gradient(90deg, rgba(22, 93, 255, 0.2) 0%, rgba(22, 93, 255, 0.8) 100%);
+            height: 100%;
+            width: 0;
+            transition: width 0.3s ease;
+        }
+        
+        .slider-thumb {
+            background: white;
+            border-radius: 9999px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .slider-thumb:active {
+            cursor: grabbing;
+            transform: scale(1.1);
+        }
+        
+        .chapter {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
             }
-            .transition-custom {
-                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            .chapter {
+                padding: 1.25rem !important;
             }
-            .scroll-smooth {
-                scroll-behavior: smooth;
-            }
-            .bg-gradient-blue {
-                background: linear-gradient(135deg, #165DFF 0%, #0E2E8B 100%);
-            }
-            .card-hover {
-                transform: translateY(0);
-                box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-            }
-            .card-hover:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 12px 20px rgba(22, 93, 255, 0.15);
-            }
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(22, 93, 255, 0.05) 0%, rgba(22, 93, 255, 0.1) 100%);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .tech-badge {
+            background: rgba(22, 93, 255, 0.1);
+            color: var(--primary);
+            border-radius: 9999px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        table {
+            min-width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        th {
+            background: #F8FAFC;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        
+        tr:hover {
+            background: #F9FAFB;
         }
     </style>
 </head>
-<body class="bg-neutral text-dark font-sans scroll-smooth">
+<body class="bg-neutral text-dark">
     <!-- 人机验证层 -->
     <div id="verification" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
-        <div class="bg-light rounded-xl shadow-2xl w-full max-w-md p-6 md:p-8">
-            <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fa fa-shield text-2xl text-primary"></i>
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+            <div class="p-6 md:p-8">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fa fa-shield text-2xl text-primary"></i>
+                    </div>
+                    <h2 class="text-xl md:text-2xl font-bold text-dark mb-2">请完成安全验证</h2>
+                    <p class="text-gray-500">滑动滑块至最右侧完成验证</p>
                 </div>
-                <h2 class="text-[clamp(1.5rem,3vw,1.8rem)] font-bold text-dark mb-2">请完成安全验证</h2>
-                <p class="text-gray-500">滑动滑块至右侧完成验证以访问内容</p>
-            </div>
-            
-            <div class="slider-container relative w-full h-16 bg-gray-100 rounded-full overflow-hidden mb-4">
-                <div class="slider-track absolute top-0 left-0 h-full w-0 bg-primary/10 transition-all duration-300"></div>
-                <div id="sliderThumb" class="slider-thumb absolute top-1/2 left-0 w-14 h-14 -translate-y-1/2 bg-white border-2 border-primary rounded-full shadow-md flex items-center justify-center cursor-pointer z-10 transition-all duration-300">
-                    <i class="fa fa-angle-right text-xl text-primary"></i>
+                
+                <div class="slider-container relative w-full h-14 mb-4">
+                    <div class="slider-track absolute top-0 left-0 h-full"></div>
+                    <div id="sliderThumb" class="slider-thumb absolute top-1/2 left-0 w-12 h-12 -translate-y-1/2">
+                        <i class="fa fa-angle-right text-lg text-primary"></i>
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center text-gray-400 pointer-events-none">
+                        拖动滑块验证
+                    </div>
                 </div>
+                <p id="verifyMsg" class="text-center text-gray-500 text-sm">请按住滑块并拖动到最右侧</p>
             </div>
-            <p id="verifyMsg" class="text-center text-gray-500 text-sm">请按住滑块并拖动到最右侧</p>
+            <div id="verificationSuccess" class="verification-success hidden text-white p-4 text-center">
+                <i class="fa fa-check-circle mr-2"></i> 验证成功，正在加载内容...
+            </div>
         </div>
     </div>
 
@@ -78,16 +236,16 @@
     <header class="bg-gradient-blue text-white py-12 md:py-20">
         <div class="container mx-auto px-4 md:px-6">
             <div class="max-w-4xl mx-auto text-center">
-                <h1 class="text-[clamp(1.8rem,5vw,3rem)] font-bold mb-4 leading-tight text-shadow">
+                <h1 class="text-3xl md:text-5xl font-bold mb-4 leading-tight text-shadow">
                     光刻机技术详解
                 </h1>
-                <p class="text-white/90 text-[clamp(1rem,2vw,1.25rem)] mb-8">
+                <p class="text-white/90 text-lg md:text-xl mb-8">
                     从基础原理到尖端技术的深度解析，涵盖光学系统、精密机械与产业格局
                 </p>
-                <div class="flex flex-wrap justify-center gap-3 text-sm text-white/80">
-                    <span class="flex items-center"><i class="fa fa-microchip mr-2"></i> 半导体制造核心</span>
-                    <span class="flex items-center"><i class="fa fa-cogs mr-2"></i> 超精密工程技术</span>
-                    <span class="flex items-center"><i class="fa fa-line-chart mr-2"></i> 全球产业分析</span>
+                <div class="flex flex-wrap justify-center gap-4 text-sm md:text-base">
+                    <span class="flex items-center bg-white/10 px-3 py-1 rounded-full"><i class="fa fa-microchip mr-2"></i> 半导体制造核心</span>
+                    <span class="flex items-center bg-white/10 px-3 py-1 rounded-full"><i class="fa fa-cogs mr-2"></i> 超精密工程技术</span>
+                    <span class="flex items-center bg-white/10 px-3 py-1 rounded-full"><i class="fa fa-line-chart mr-2"></i> 全球产业分析</span>
                 </div>
             </div>
         </div>
@@ -98,17 +256,17 @@
         <div class="container mx-auto px-4 md:px-6">
             <ul class="flex flex-wrap items-center py-4 gap-x-8 gap-y-2">
                 <li>
-                    <a href="#beginner" class="nav-link active px-3 py-2 rounded-md font-medium transition-custom text-primary border-b-2 border-primary" data-target="beginner-content">
+                    <a href="#beginner" class="nav-link active px-3 py-2 rounded-md font-medium transition-colors duration-300" data-target="beginner-content">
                         基础入门版
                     </a>
                 </li>
                 <li>
-                    <a href="#expert" class="nav-link px-3 py-2 rounded-md font-medium transition-custom text-gray-600 hover:text-primary" data-target="expert-content">
+                    <a href="#expert" class="nav-link px-3 py-2 rounded-md font-medium transition-colors duration-300 text-gray-600 hover:text-primary" data-target="expert-content">
                         专业深度版
                     </a>
                 </li>
                 <li class="ml-auto hidden md:block">
-                    <a href="#references" class="px-3 py-2 rounded-md font-medium text-gray-600 hover:text-primary transition-custom">
+                    <a href="#references" class="px-3 py-2 rounded-md font-medium text-gray-600 hover:text-primary transition-colors duration-300">
                         <i class="fa fa-book mr-1"></i> 参考资料
                     </a>
                 </li>
@@ -125,11 +283,11 @@
                     <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-3">
                         <i class="fa fa-graduation-cap text-primary"></i>
                     </div>
-                    <h2 class="text-[clamp(1.5rem,3vw,2.25rem)] font-bold text-dark">基础入门版：光刻机核心知识</h2>
+                    <h2 class="text-2xl md:text-3xl font-bold text-dark">基础入门版：光刻机核心知识</h2>
                 </div>
 
                 <!-- 章节1：光刻机定义与作用 -->
-                <div class="chapter bg-white rounded-xl p-6 md:p-8 mb-8 card-hover">
+                <div class="chapter p-6 md:p-8 mb-8 card-hover">
                     <div class="flex items-center mb-5">
                         <span class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium mr-3">1</span>
                         <h3 class="text-xl md:text-2xl font-bold text-dark">光刻机的本质与核心作用</h3>
@@ -139,7 +297,7 @@
                         光刻机（Lithography Machine）是半导体制造中最关键的设备，被誉为"半导体工业皇冠上的明珠"。其核心功能是将集成电路设计图案通过光学系统精确投影到涂有光刻胶的硅片（晶圆）上，为后续的蚀刻、离子注入等工艺提供精确的图案模板。
                     </p>
                     
-                    <div class="bg-neutral rounded-lg p-4 md:p-5 mb-5 border-l-4 border-primary">
+                    <div class="highlight-box rounded-lg p-4 md:p-5 mb-5">
                         <p class="italic text-gray-700">
                             <i class="fa fa-lightbulb-o text-primary mr-2"></i>
                             简单来说，光刻机就像一台超精密的"纳米级打印机"，只不过它打印的不是文字或图像，而是构成芯片功能的电路图案，这些图案的线宽可以达到纳米级别（1纳米等于十亿分之一米）。
@@ -152,7 +310,7 @@
                 </div>
 
                 <!-- 章节2：产业地位与重要性 -->
-                <div class="chapter bg-white rounded-xl p-6 md:p-8 mb-8 card-hover">
+                <div class="chapter p-6 md:p-8 mb-8 card-hover">
                     <div class="flex items-center mb-5">
                         <span class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium mr-3">2</span>
                         <h3 class="text-xl md:text-2xl font-bold text-dark">光刻机在半导体产业中的战略地位</h3>
@@ -187,7 +345,7 @@
                 </div>
 
                 <!-- 章节3：技术分类与演进 -->
-                <div class="chapter bg-white rounded-xl p-6 md:p-8 mb-8 card-hover">
+                <div class="chapter p-6 md:p-8 mb-8 card-hover">
                     <div class="flex items-center mb-5">
                         <span class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium mr-3">3</span>
                         <h3 class="text-xl md:text-2xl font-bold text-dark">光刻机技术分类与发展历程</h3>
@@ -198,66 +356,66 @@
                     </p>
                     
                     <div class="space-y-4 mb-6">
-                        <div class="border border-gray-100 rounded-lg p-4 hover:border-primary/30 transition-custom">
+                        <div class="border border-gray-100 rounded-lg p-4 hover:border-primary/30 transition-colors duration-300">
                             <h4 class="font-semibold text-dark mb-2">紫外线（UV）光刻机</h4>
                             <p class="text-gray-700 text-sm mb-2">使用紫外线作为光源，包括g线（436nm）和i线（365nm）两种类型</p>
                             <div class="flex flex-wrap gap-2">
-                                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">应用于180nm及以上成熟制程</span>
-                                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">主要用于汽车电子、功率半导体</span>
-                                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">设备成本较低（数百万美元）</span>
+                                <span class="tech-badge">应用于180nm及以上成熟制程</span>
+                                <span class="tech-badge">主要用于汽车电子、功率半导体</span>
+                                <span class="tech-badge">设备成本较低（数百万美元）</span>
                             </div>
                         </div>
                         
-                        <div class="border border-gray-100 rounded-lg p-4 hover:border-primary/30 transition-custom">
+                        <div class="border border-gray-100 rounded-lg p-4 hover:border-primary/30 transition-colors duration-300">
                             <h4 class="font-semibold text-dark mb-2">深紫外线（DUV）光刻机</h4>
                             <p class="text-gray-700 text-sm mb-2">使用深紫外线光源（248nm KrF和193nm ArF），配合浸没式技术</p>
                             <div class="flex flex-wrap gap-2">
-                                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">通过多重曝光可实现7nm制程</span>
-                                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">全球年出货量约300台</span>
-                                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">单台成本约5000万美元</span>
+                                <span class="tech-badge">通过多重曝光可实现7nm制程</span>
+                                <span class="tech-badge">全球年出货量约300台</span>
+                                <span class="tech-badge">单台成本约5000万美元</span>
                             </div>
                         </div>
                         
-                        <div class="border border-gray-100 rounded-lg p-4 hover:border-primary/30 transition-custom">
+                        <div class="border border-gray-100 rounded-lg p-4 hover:border-primary/30 transition-colors duration-300">
                             <h4 class="font-semibold text-dark mb-2">极紫外线（EUV）光刻机</h4>
                             <p class="text-gray-700 text-sm mb-2">使用13.5nm极紫外光，是目前最先进的光刻技术</p>
                             <div class="flex flex-wrap gap-2">
-                                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">直接支持7nm及以下先进制程</span>
-                                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">2022年全球出货量约60台</span>
-                                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">单台成本超过1.5亿美元</span>
+                                <span class="tech-badge">直接支持7nm及以下先进制程</span>
+                                <span class="tech-badge">2022年全球出货量约60台</span>
+                                <span class="tech-badge">单台成本超过1.5亿美元</span>
                             </div>
                         </div>
                     </div>
                     
                     <div class="bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg p-4">
                         <h4 class="font-semibold mb-2 text-dark">技术演进里程碑</h4>
-                        <ul class="space-y-2 text-sm">
-                            <li class="flex items-start">
-                                <span class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs mt-0.5 mr-2 flex-shrink-0">1980s</span>
-                                <span>投影式光刻技术成熟，开始使用紫外线光源，支持微米级制程</span>
+                        <ul class="tech-timeline text-sm">
+                            <li>
+                                <span class="font-medium">1980s</span>
+                                <p class="text-gray-600">投影式光刻技术成熟，开始使用紫外线光源，支持微米级制程</p>
                             </li>
-                            <li class="flex items-start">
-                                <span class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs mt-0.5 mr-2 flex-shrink-0">1990s</span>
-                                <span>DUV光刻技术出现，将制程节点推进至百纳米级别</span>
+                            <li>
+                                <span class="font-medium">1990s</span>
+                                <p class="text-gray-600">DUV光刻技术出现，将制程节点推进至百纳米级别</p>
                             </li>
-                            <li class="flex items-start">
-                                <span class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs mt-0.5 mr-2 flex-shrink-0">2002</span>
-                                <span>浸没式光刻技术突破，通过193nm光源实现45nm制程</span>
+                            <li>
+                                <span class="font-medium">2002</span>
+                                <p class="text-gray-600">浸没式光刻技术突破，通过193nm光源实现45nm制程</p>
                             </li>
-                            <li class="flex items-start">
-                                <span class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs mt-0.5 mr-2 flex-shrink-0">2017</span>
-                                <span>ASML推出首台量产型EUV光刻机，支持7nm制程量产</span>
+                            <li>
+                                <span class="font-medium">2017</span>
+                                <p class="text-gray-600">ASML推出首台量产型EUV光刻机，支持7nm制程量产</p>
                             </li>
-                            <li class="flex items-start">
-                                <span class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs mt-0.5 mr-2 flex-shrink-0">2025</span>
-                                <span>High-NA EUV光刻机预计量产，支持3nm及以下制程</span>
+                            <li>
+                                <span class="font-medium">2025</span>
+                                <p class="text-gray-600">High-NA EUV光刻机预计量产，支持3nm及以下制程</p>
                             </li>
                         </ul>
                     </div>
                 </div>
 
                 <!-- 更多基础章节 -->
-                <div class="chapter bg-white rounded-xl p-6 md:p-8 mb-8 card-hover">
+                <div class="chapter p-6 md:p-8 mb-8 card-hover">
                     <div class="flex items-center mb-5">
                         <span class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium mr-3">4</span>
                         <h3 class="text-xl md:text-2xl font-bold text-dark">光刻机核心系统与工作原理</h3>
@@ -331,7 +489,7 @@
                 </div>
 
                 <!-- ASML与全球供应链章节 -->
-                <div class="chapter bg-white rounded-xl p-6 md:p-8 mb-8 card-hover">
+                <div class="chapter p-6 md:p-8 mb-8 card-hover">
                     <div class="flex items-center mb-5">
                         <span class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium mr-3">5</span>
                         <h3 class="text-xl md:text-2xl font-bold text-dark">ASML与全球光刻机供应链</h3>
@@ -364,7 +522,7 @@
                     
                     <div>
                         <h4 class="font-semibold mb-3 text-dark">全球化供应链的核心环节</h4>
-                        <div class="overflow-x-auto">
+                        <div class="table-responsive">
                             <table class="min-w-full border border-gray-200 rounded-lg">
                                 <thead>
                                     <tr class="bg-gray-50">
@@ -403,17 +561,17 @@
         </section>
 
         <!-- 专业深度版内容 -->
-        <section id="expert-content" class="content-section hidden">
+        <section id="expert-content" class="content-section">
             <div class="max-w-4xl mx-auto">
                 <div class="flex items-center mb-8">
                     <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-3">
                         <i class="fa fa-flask text-primary"></i>
                     </div>
-                    <h2 class="text-[clamp(1.5rem,3vw,2.25rem)] font-bold text-dark">专业深度版：光刻机技术解析</h2>
+                    <h2 class="text-2xl md:text-3xl font-bold text-dark">专业深度版：光刻机技术解析</h2>
                 </div>
 
                 <!-- 章节1：核心技术指标 -->
-                <div class="chapter bg-white rounded-xl p-6 md:p-8 mb-8 card-hover">
+                <div class="chapter p-6 md:p-8 mb-8 card-hover">
                     <div class="flex items-center mb-5">
                         <span class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium mr-3">1</span>
                         <h3 class="text-xl md:text-2xl font-bold text-dark">光刻机核心技术指标与物理极限</h3>
@@ -425,7 +583,7 @@
                     
                     <div class="mb-6">
                         <h4 class="font-semibold mb-3 text-dark">分辨率（Resolution）</h4>
-                        <div class="bg-neutral rounded-lg p-4 mb-3">
+                        <div class="formula-box rounded-lg p-4 mb-3">
                             <p class="text-sm mb-2">分辨率是光刻机能够实现的最小线宽，由瑞利公式决定：</p>
                             <div class="bg-white p-3 rounded border border-gray-200 text-center font-medium mb-2">
                                 R = k₁·λ/NA
@@ -487,7 +645,7 @@
                 </div>
 
                 <!-- 章节2：EUV光源技术 -->
-                <div class="chapter bg-white rounded-xl p-6 md:p-8 mb-8 card-hover">
+                <div class="chapter p-6 md:p-8 mb-8 card-hover">
                     <div class="flex items-center mb-5">
                         <span class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium mr-3">2</span>
                         <h3 class="text-xl md:text-2xl font-bold text-dark">极紫外（EUV）光源技术原理与挑战</h3>
@@ -583,7 +741,7 @@
                 </div>
 
                 <!-- 更多专业章节 -->
-                <div class="chapter bg-white rounded-xl p-6 md:p-8 mb-8 card-hover">
+                <div class="chapter p-6 md:p-8 mb-8 card-hover">
                     <div class="flex items-center mb-5">
                         <span class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium mr-3">3</span>
                         <h3 class="text-xl md:text-2xl font-bold text-dark">EUV光学系统与精密机械设计</h3>
@@ -636,7 +794,7 @@
                             光刻机工作台需要实现纳米级定位精度和高动态响应，是机械设计和控制技术的巅峰之作。
                         </p>
                         
-                        <div class="overflow-x-auto">
+                        <div class="table-responsive">
                             <table class="min-w-full border border-gray-200 rounded-lg">
                                 <thead>
                                     <tr class="bg-gray-50">
@@ -682,7 +840,7 @@
                 </div>
 
                 <!-- 章节4：光刻胶与工艺 -->
-                <div class="chapter bg-white rounded-xl p-6 md:p-8 mb-8 card-hover">
+                <div class="chapter p-6 md:p-8 mb-8 card-hover">
                     <div class="flex items-center mb-5">
                         <span class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium mr-3">4</span>
                         <h3 class="text-xl md:text-2xl font-bold text-dark">EUV光刻胶特性与工艺优化</h3>
@@ -728,7 +886,7 @@
                         
                         <div class="bg-white border border-gray-200 rounded-lg p-4 mb-4">
                             <h5 class="font-semibold text-sm mb-2">EUV光刻胶类型比较</h5>
-                            <div class="overflow-x-auto">
+                            <div class="table-responsive">
                                 <table class="min-w-full text-xs">
                                     <thead>
                                         <tr>
@@ -818,7 +976,7 @@
                     <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-3">
                         <i class="fa fa-book text-primary"></i>
                     </div>
-                    <h2 class="text-[clamp(1.5rem,3vw,2.25rem)] font-bold text-dark">参考资料与扩展阅读</h2>
+                    <h2 class="text-2xl md:text-3xl font-bold text-dark">参考资料与扩展阅读</h2>
                 </div>
                 
                 <div class="bg-white rounded-xl p-6 md:p-8 card-hover">
@@ -828,25 +986,25 @@
                             <ul class="space-y-3">
                                 <li class="flex items-start">
                                     <i class="fa fa-file-pdf-o text-red-500 mt-1 mr-2"></i>
-                                    <a href="https://www.asml.com/doclib/202105171146472711/asml-annual-report-2022.pdf" target="_blank" class="text-primary hover:text-secondary transition-custom text-sm">
+                                    <a href="https://www.asml.com/doclib/202105171146472711/asml-annual-report-2022.pdf" target="_blank" class="text-primary hover:text-secondary transition-colors duration-300 text-sm">
                                         ASML 2022年度报告（技术章节）
                                     </a>
                                 </li>
                                 <li class="flex items-start">
                                     <i class="fa fa-file-text-o text-primary mt-1 mr-2"></i>
-                                    <a href="https://www.semi.org/en/industry-resources/research-and-statistics" target="_blank" class="text-primary hover:text-secondary transition-custom text-sm">
+                                    <a href="https://www.semi.org/en/industry-resources/research-and-statistics" target="_blank" class="text-primary hover:text-secondary transition-colors duration-300 text-sm">
                                         SEMI半导体行业技术报告
                                     </a>
                                 </li>
                                 <li class="flex items-start">
                                     <i class="fa fa-file-powerpoint-o text-orange-500 mt-1 mr-2"></i>
-                                    <a href="https://ieeexplore.ieee.org/document/9155362" target="_blank" class="text-primary hover:text-secondary transition-custom text-sm">
+                                    <a href="https://ieeexplore.ieee.org/document/9155362" target="_blank" class="text-primary hover:text-secondary transition-colors duration-300 text-sm">
                                         IEEE Xplore: EUV光刻技术综述
                                     </a>
                                 </li>
                                 <li class="flex items-start">
                                     <i class="fa fa-file-text-o text-primary mt-1 mr-2"></i>
-                                    <a href="https://www.nist.gov/publications/semiconductor-manufacturing-technology-roadmap" target="_blank" class="text-primary hover:text-secondary transition-custom text-sm">
+                                    <a href="https://www.nist.gov/publications/semiconductor-manufacturing-technology-roadmap" target="_blank" class="text-primary hover:text-secondary transition-colors duration-300 text-sm">
                                         NIST半导体制造技术路线图
                                     </a>
                                 </li>
@@ -887,15 +1045,15 @@
                     <div class="mt-6 pt-6 border-t border-gray-100">
                         <h3 class="text-lg font-semibold mb-4 text-dark">行业动态与分析</h3>
                         <div class="grid md:grid-cols-3 gap-4">
-                            <a href="https://semiengineering.com/category/lithography/" target="_blank" class="bg-neutral p-4 rounded-lg hover:bg-primary/5 transition-custom">
+                            <a href="https://semiengineering.com/category/lithography/" target="_blank" class="bg-neutral p-4 rounded-lg hover:bg-primary/5 transition-colors duration-300">
                                 <h4 class="font-medium text-sm mb-2">SemiEngineering</h4>
                                 <p class="text-xs text-gray-600">半导体光刻技术最新进展</p>
                             </a>
-                            <a href="https://www.techinsights.com/blog/techinsights-news" target="_blank" class="bg-neutral p-4 rounded-lg hover:bg-primary/5 transition-custom">
+                            <a href="https://www.techinsights.com/blog/techinsights-news" target="_blank" class="bg-neutral p-4 rounded-lg hover:bg-primary/5 transition-colors duration-300">
                                 <h4 class="font-medium text-sm mb-2">TechInsights</h4>
                                 <p class="text-xs text-gray-600">芯片制程与光刻技术分析</p>
                             </a>
-                            <a href="https://www.asml.com/en/technology" target="_blank" class="bg-neutral p-4 rounded-lg hover:bg-primary/5 transition-custom">
+                            <a href="https://www.asml.com/en/technology" target="_blank" class="bg-neutral p-4 rounded-lg hover:bg-primary/5 transition-colors duration-300">
                                 <h4 class="font-medium text-sm mb-2">ASML技术专栏</h4>
                                 <p class="text-xs text-gray-600">官方技术解析与白皮书</p>
                             </a>
@@ -920,10 +1078,10 @@
                     <div>
                         <h3 class="text-white text-lg font-semibold mb-4">快速导航</h3>
                         <ul class="grid grid-cols-2 gap-2 text-sm">
-                            <li><a href="#beginner" class="hover:text-primary transition-custom">基础入门版</a></li>
-                            <li><a href="#expert" class="hover:text-primary transition-custom">专业深度版</a></li>
-                            <li><a href="#references" class="hover:text-primary transition-custom">参考资料</a></li>
-                            <li><a href="https://www.asml.com/en" target="_blank" class="hover:text-primary transition-custom">ASML官网</a></li>
+                            <li><a href="#beginner" class="hover:text-primary transition-colors duration-300">基础入门版</a></li>
+                            <li><a href="#expert" class="hover:text-primary transition-colors duration-300">专业深度版</a></li>
+                            <li><a href="#references" class="hover:text-primary transition-colors duration-300">参考资料</a></li>
+                            <li><a href="https://www.asml.com/en" target="_blank" class="hover:text-primary transition-colors duration-300">ASML官网</a></li>
                         </ul>
                     </div>
                 </div>
@@ -936,97 +1094,119 @@
     </footer>
 
     <script>
-        // 导航切换功能
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                // 移除所有活跃状态
-                document.querySelectorAll('.nav-link').forEach(l => {
-                    l.classList.remove('active', 'text-primary', 'border-b-2', 'border-primary');
-                    l.classList.add('text-gray-600');
-                });
-                document.querySelectorAll('.content-section').forEach(s => s.classList.add('hidden'));
-                
-                // 添加当前活跃状态
-                this.classList.add('active', 'text-primary', 'border-b-2', 'border-primary');
-                this.classList.remove('text-gray-600');
-                const targetId = this.getAttribute('data-target');
-                document.getElementById(targetId).classList.remove('hidden');
-            });
-        });
-
         // 人机验证功能
-        const verification = document.getElementById('verification');
-        const sliderThumb = document.getElementById('sliderThumb');
-        const sliderTrack = document.querySelector('.slider-track');
-        const verifyMsg = document.getElementById('verifyMsg');
-        const sliderContainer = document.querySelector('.slider-container');
-
-        let isDragging = false;
-        let startX;
-        let currentX;
-        const containerWidth = sliderContainer.offsetWidth;
-        const thumbWidth = sliderThumb.offsetWidth;
-        const maxOffset = containerWidth - thumbWidth;
-
-        // 鼠标/触摸事件
-        sliderThumb.addEventListener('mousedown', startDrag);
-        sliderThumb.addEventListener('touchstart', startDrag, { passive: true });
-        document.addEventListener('mousemove', drag);
-        document.addEventListener('touchmove', drag, { passive: true });
-        document.addEventListener('mouseup', endDrag);
-        document.addEventListener('touchend', endDrag);
-
-        function startDrag(e) {
-            isDragging = true;
-            startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-            sliderThumb.style.transition = 'none';
-            sliderTrack.style.transition = 'none';
-            sliderThumb.classList.add('scale-110');
-        }
-
-        function drag(e) {
-            if (!isDragging) return;
-            currentX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-            const offset = currentX - startX;
-            let position = Math.max(0, Math.min(offset, maxOffset));
+        document.addEventListener('DOMContentLoaded', function() {
+            const verification = document.getElementById('verification');
+            const sliderThumb = document.getElementById('sliderThumb');
+            const sliderTrack = document.querySelector('.slider-track');
+            const verifyMsg = document.getElementById('verifyMsg');
+            const verificationSuccess = document.getElementById('verificationSuccess');
+            const container = document.querySelector('.slider-container');
             
-            sliderThumb.style.left = `${position}px`;
-            sliderTrack.style.width = `${position + thumbWidth}px`;
+            let isDragging = false;
+            let startX = 0;
+            let currentX = 0;
+            const containerWidth = container.offsetWidth;
+            const thumbWidth = sliderThumb.offsetWidth;
+            const maxOffset = containerWidth - thumbWidth;
             
-            // 显示当前进度
-            const progress = Math.round((position / maxOffset) * 100);
-            verifyMsg.textContent = `已完成 ${progress}%`;
-        }
-
-        function endDrag() {
-            if (!isDragging) return;
-            isDragging = false;
-            sliderThumb.classList.remove('scale-110');
-            sliderThumb.style.transition = 'left 0.3s, transform 0.3s';
-            sliderTrack.style.transition = 'width 0.3s';
+            // 滑块拖动事件
+            sliderThumb.addEventListener('mousedown', startDrag);
+            sliderThumb.addEventListener('touchstart', startDrag);
             
-            // 验证成功条件：滑动距离达到90%以上
-            if (currentX - startX >= maxOffset * 0.9) {
-                // 完全滑到最右侧
-                sliderThumb.style.left = `${maxOffset}px`;
-                sliderTrack.style.width = `${maxOffset + thumbWidth}px`;
-                verifyMsg.textContent = '验证成功，正在加载内容...';
-                sliderThumb.innerHTML = '<i class="fa fa-check text-primary"></i>';
+            function startDrag(e) {
+                e.preventDefault();
+                isDragging = true;
+                startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
                 
-                // 延迟后隐藏验证层
+                document.addEventListener('mousemove', onDrag);
+                document.addEventListener('touchmove', onDrag);
+                document.addEventListener('mouseup', stopDrag);
+                document.addEventListener('touchend', stopDrag);
+                
+                sliderThumb.style.transition = 'none';
+                sliderTrack.style.transition = 'none';
+            }
+            
+            function onDrag(e) {
+                if (!isDragging) return;
+                
+                currentX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+                let newLeft = currentX - startX;
+                newLeft = Math.max(0, Math.min(newLeft, maxOffset));
+                
+                sliderThumb.style.left = `${newLeft}px`;
+                sliderTrack.style.width = `${newLeft + thumbWidth/2}px`;
+                
+                // 更新进度提示
+                const progress = Math.round((newLeft / maxOffset) * 100);
+                verifyMsg.textContent = `已完成 ${progress}%`;
+                
+                // 验证成功条件
+                if (newLeft >= maxOffset - 5) {
+                    verifySuccessFunc();
+                }
+            }
+            
+            function stopDrag() {
+                isDragging = false;
+                
+                document.removeEventListener('mousemove', onDrag);
+                document.removeEventListener('touchmove', onDrag);
+                document.removeEventListener('mouseup', stopDrag);
+                document.removeEventListener('touchend', stopDrag);
+                
+                // 如果没有验证成功，则重置滑块
+                if (parseInt(sliderThumb.style.left) < maxOffset - 5) {
+                    sliderThumb.style.transition = 'left 0.3s ease';
+                    sliderTrack.style.transition = 'width 0.3s ease';
+                    sliderThumb.style.left = '0px';
+                    sliderTrack.style.width = '0px';
+                    verifyMsg.textContent = '请按住滑块并拖动到最右侧';
+                }
+            }
+            
+            function verifySuccessFunc() {
+                verifyMsg.textContent = '验证成功';
+                verificationSuccess.classList.remove('hidden');
+                sliderThumb.innerHTML = '<i class="fa fa-check text-green-500"></i>';
+                
                 setTimeout(() => {
                     verification.style.opacity = '0';
-                    verification.style.transition = 'opacity 0.5s';
-                    setTimeout(() => verification.style.display = 'none', 500);
-                }, 800);
-            } else {
-                // 验证失败，重置滑块
-                sliderThumb.style.left = '0';
-                sliderTrack.style.width = '0';
-                verifyMsg.textContent = '验证失败，请重新滑动至最右侧';
+                    setTimeout(() => {
+                        verification.style.display = 'none';
+                    }, 500);
+                }, 1000);
             }
-        }
+            
+            // 导航切换功能
+            const navLinks = document.querySelectorAll('.nav-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // 更新导航状态
+                    navLinks.forEach(nav => {
+                        nav.classList.remove('active', 'text-primary', 'border-primary');
+                        nav.classList.add('text-gray-600');
+                    });
+                    
+                    this.classList.add('active', 'text-primary', 'border-primary');
+                    this.classList.remove('text-gray-600');
+                    
+                    // 显示对应内容
+                    const targetId = this.getAttribute('data-target');
+                    contentSections.forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    
+                    const targetSection = document.getElementById(targetId);
+                    targetSection.classList.add('active');
+                });
+            });
+        });
     </script>
 </body>
 </html>
