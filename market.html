@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>全球格局与市场分析 · 光刻机技术详解（Market）</title>
+  <meta name="description" content="光刻机市场深度分析：产业结构、主流厂商、供给链、成本与风险、趋势预测与产业建议。含动态背景与渐显动效。">
+  <style>
+    /* ---------- 基础重置与变量 ---------- */
+    :root{
+      --bg-dark: #071227;
+      --card: rgba(255,255,255,0.96);
+      --muted: #94a3b8;
+      --accent: #0b61ff;
+      --glass: rgba(255,255,255,0.06);
+      --ease: cubic-bezier(.2,.9,.3,1);
+      --maxw: 1100px;
+      --text: #0f1724;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Helvetica Neue",Arial;background:var(--bg-dark);color:var(--text);-webkit-font-smoothing:antialiased}
+    a{color:var(--accent);text-decoration:none}
+    /* ---------- 动态背景 ---------- */
+    .bg {
+      position:fixed; inset:0; z-index:-3; overflow:hidden;
+      background: radial-gradient(circle at 10% 20%, rgba(15,97,255,0.12), transparent 8%),
+                  radial-gradient(circle at 85% 80%, rgba(107,193,255,0.08), transparent 12%),
+                  linear-gradient(180deg,#071227 0%, #0a1830 60%);
+      transition: opacity 0.9s var(--ease);
+    }
+    /* 移动渐变层 */
+    .bg::before{
+      content:""; position:absolute; inset:-20%;
+      background: conic-gradient(from 90deg at 50% 50%, rgba(11,97,255,0.06), rgba(107,193,255,0.03), rgba(11,97,255,0.06));
+      filter: blur(60px) saturate(120%);
+      animation: rotateGrad 18s linear infinite;
+      opacity:0.85;
+      mix-blend-mode:screen;
+    }
+    @keyframes rotateGrad { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+    /* 轻微噪点层，保持低调 */
+    .bg .noise {
+      position:absolute; inset:0; background-image: radial-gradient(rgba(255,255,255,0.01) 1px, transparent 1px);
+      background-size: 6px 6px; opacity:0.7; mix-blend-mode:overlay;
+    }
+
+    /* ---------- 页面容器 ---------- */
+    .wrap{max-width:var(--maxw);margin:36px auto;padding:26px;position:relative;z-index:1;}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+    .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,#0b61ff,#6bc1ff);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;box-shadow:0 8px 30px rgba(11,97,255,0.16)}
+    h1{margin:0;font-size:20px;color:#e6eefc}
+    .meta{color:var(--muted);font-size:13px;margin-top:6px}
+
+    /* ---------- 页面卡片与布局 ---------- */
+    .grid{display:grid;grid-template-columns: 1fr 360px; gap:20px; align-items:start;}
+    .card { background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.96)); border-radius:12px; padding:20px; box-shadow: 0 20px 50px rgba(2,6,23,0.4); transform-origin:center; opacity:0; transform:translateY(10px); transition: opacity 700ms var(--ease), transform 700ms var(--ease);}
+    .card.visible{opacity:1; transform:translateY(0)}
+    .side { background: rgba(255,255,255,0.04); border-radius:12px; padding:18px; color:#e8f0ff; box-shadow:0 10px 30px rgba(2,6,23,0.45) }
+
+    /* ---------- 加载覆盖层（约 1s） ---------- */
+    #loader {
+      position:fixed; inset:0; display:flex; align-items:center; justify-content:center; z-index:9999;
+      background: linear-gradient(180deg, rgba(5,10,20,0.9), rgba(5,10,20,0.85));
+      color:white; flex-direction:column;
+      transition: opacity 900ms var(--ease), visibility 900ms var(--ease);
+    }
+    #loader.hidden{opacity:0; visibility:hidden; pointer-events:none;}
+    .spinner{
+      width:56px; height:56px; border-radius:50%;
+      border:5px solid rgba(255,255,255,0.12);
+      border-top-color: #9bd4ff;
+      animation: spin 1s linear infinite;
+      box-shadow:0 8px 20px rgba(11,97,255,0.18), inset 0 -6px 12px rgba(255,255,255,0.02);
+    }
+    @keyframes spin { to{transform:rotate(360deg)} }
+
+    #loader .label{margin-top:12px;color:#bcd9ff;font-size:14px;opacity:0.95}
+
+    /* ---------- 内容样式 ---------- */
+    h2{margin:0 0 8px 0; color:#07122b}
+    h3{margin:0 0 6px 0; color:#0f2b55}
+    p{color:#153247;line-height:1.6}
+    .muted{color:var(--muted)}
+    .pill{display:inline-block;background:rgba(11,97,255,0.08);color:#08306a;padding:6px 10px;border-radius:999px;font-size:13px;margin-right:8px}
+
+    /* 简洁表格 */
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{padding:10px;border-bottom:1px solid #eef5fb;text-align:left;font-size:14px;color:#123247}
+    th{background:rgba(11,97,255,0.04);color:#07203a;font-weight:600}
+
+    /* 小目标动画（hover） */
+    .vendor{display:flex;align-items:center;gap:12px;padding:10px;border-radius:10px;transition:transform 260ms var(--ease), box-shadow 260ms var(--ease)}
+    .vendor:hover{transform:translateY(-6px); box-shadow:0 12px 30px rgba(11,97,255,0.08)}
+
+    /* 响应式 */
+    @media (max-width:980px) {
+      .grid{grid-template-columns:1fr}
+      .side{order:2}
+    }
+
+    /* ---------- 小动画：段落入场（用于 scroll reveal） ---------- */
+    .reveal { opacity:0; transform: translateY(16px); transition: opacity 760ms var(--ease), transform 760ms var(--ease) }
+    .reveal.in { opacity:1; transform: translateY(0) }
+
+    /* 链接按钮 */
+    .link-btn { display:inline-block; padding:8px 12px; border-radius:8px; background:#0b61ff; color:white; font-weight:600; text-decoration:none; box-shadow:0 12px 30px rgba(11,97,255,0.12); margin-top:8px }
+    .small-muted {font-size:13px;color:var(--muted)}
+
+  </style>
+</head>
+<body>
+  <!-- 动态背景 -->
+  <div class="bg" aria-hidden="true">
+    <div class="noise"></div>
+  </div>
+
+  <!-- 加载层（1s 左右） -->
+  <div id="loader" role="status" aria-live="polite">
+    <div class="spinner" aria-hidden="true"></div>
+    <div class="label">正在加载 · Loading…</div>
+  </div>
+
+  <div class="wrap" id="main">
+    <header>
+      <div class="logo" aria-hidden="true">光刻</div>
+      <div>
+        <h1>全球格局与市场分析</h1>
+        <div class="meta">深度市场洞见 · 页面动效与加载动画（示例）</div>
+      </div>
+    </header>
+
+    <nav style="margin-bottom:12px">
+      <a class="pill" href="index.html">目录</a>
+      <a class="pill" href="principle.html">基础原理</a>
+      <a class="pill" href="core.html">核心技术</a>
+      <a class="pill" href="china.html">国产替代</a>
+    </nav>
+
+    <div class="grid">
+      <!-- 主内容 -->
+      <main class="card" id="content-card" role="main" aria-labelledby="market-title">
+        <h2 id="market-title">市场概览与关键趋势</h2>
+
+        <section class="reveal" id="overview">
+          <h3>市场概览</h3>
+          <p>
+            光刻设备市场具有高度技术门槛与资本密集的特性。高端 EUV 设备集中在极少数供应商与少数客户（顶尖晶圆代工厂与领先 IDM）之间，而 DUV/浸没式设备与配套服务构成了更广泛的销量基础。
+            行业内资本支出（CapEx）呈阶段性波动，受半导体景气周期、工艺迁移节点（例如向更小制程迁移）、以及产能扩张计划驱动。
+          </p>
+        </section>
+
+        <section class="reveal" id="vendor-landscape" style="margin-top:14px">
+          <h3>厂商格局（竞争与分工）</h3>
+          <p>
+            主流市场可以按技术层级划分：
+          </p>
+          <table aria-label="厂商分层">
+            <thead>
+              <tr><th>层级</th><th>代表厂商 / 说明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>EUV（极紫外）</td><td>少数厂商与极高技术门槛（如行业领先的系统与光源集成商）；EUV 为先进制程的核心。</td></tr>
+              <tr><td>DUV & 浸没式</td><td>成熟制程主力，供应商较多，适用于主流与成熟工艺节点。</td></tr>
+              <tr><td>中低端及专用光刻</td><td>区域性或专用应用（MEMS、功率器件、传感器）市场规模稳健且有本地化机会。</td></tr>
+            </tbody>
+          </table>
+
+          <div style="margin-top:10px">
+            <div class="vendor">
+              <div style="width:46px;height:46px;border-radius:8px;background:linear-gradient(135deg,#0b61ff,#6bc1ff);display:flex;align-items:center;justify-content:center;color:white;font-weight:700">A</div>
+              <div>
+                <div style="font-weight:700">行业龙头（示例）</div>
+                <div class="small-muted">主导 EUV 系统与高端市场，研发与交付周期长。</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="reveal" id="market-size" style="margin-top:14px">
+          <h3>市场规模与资金特性（定性分析）</h3>
+          <p>
+            由于高端光刻设备单台采购成本极高且交付周期长，市场呈现出“少量高价、少量高频”的特征：高端设备在少数客户处形成集中采购，而成熟设备在更广泛客户群有持续需要。
+            行业内年度支出由以下因素驱动：晶圆厂产能扩张计划、工艺退役/升级周期、以及整体终端需求（智能手机、AI 加速器、汽车电子等）。
+          </p>
+          <ul>
+            <li>资本密集：单台高端设备需要数千万到上亿美元（取决于设备类型与配置）。</li>
+            <li>采购节奏：客户通常按节点（例如从 N+1 到 N-1 制程）分批采购，并配合产能排期。</li>
+            <li>二手与维修：成熟设备二级市场与翻新服务在某些地区形成重要补充。</li>
+          </ul>
+        </section>
+
+        <section class="reveal" id="supply-chain" style="margin-top:14px">
+          <h3>供给链构成与关键瓶颈</h3>
+          <p>
+            光刻机系统由数千个高精度部件组成，关键环节包括：高数值孔径光学组件、精密机械台、真空/稳定化系统、掩模/掩膜（mask）与高亮度光源。以下是常见瓶颈与影响因素：
+          </p>
+          <ul>
+            <li><strong>光学元件：</strong>超精密镜片与反射面抛光与涂层难度高，量产周期长。</li>
+            <li><strong>高亮度光源：</strong>EUV 光源亮度与稳定性直接限制吞吐率（throughput）。</li>
+            <li><strong>掩模与检测：</strong>先进掩模制备与掩模缺陷检测技术成本高，且影响良率。</li>
+            <li><strong>软件与算法：</strong>计算光刻、数值仿真与掩模校正（OPC）是决定成像效果与良率的重要软实力。</li>
+          </ul>
+        </section>
+
+        <section class="reveal" id="cost-breakdown" style="margin-top:14px">
+          <h3>采购与全周期成本（要点）</h3>
+          <p class="muted">下列为典型考虑维度（视厂商与设备不同而变化）：</p>
+          <table aria-label="成本维度">
+            <thead><tr><th>成本类别</th><th>说明</th></tr></thead>
+            <tbody>
+              <tr><td>设备采购</td><td>一次性资本支出（CAPEX），差别最大的一项。</td></tr>
+              <tr><td>安装与调试</td><td>交付现场的安装、对位、真空与冷却系统配置。</td></tr>
+              <tr><td>持续维护</td><td>备件、年维护合同（AMC）、软件升级与现场工程支持。</td></tr>
+              <tr><td>耗材与掩模</td><td>光刻胶、掩模制备、清洁与检测相关的运营支出（OPEX）。</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="reveal" id="demand-drivers" style="margin-top:14px">
+          <h3>需求驱动因素与时间窗口</h3>
+          <p>
+            需求来自多层面：先进制程对 EUV 的刚性需求、成熟制程对 DUV 的持续需求，以及新兴应用（功率器件、传感器、光子芯片等）对专用光刻设备的拉动。
+            资本与政策周期、客户产能扩张计划，以及终端市场（例如 AI、大数据中心、汽车电子）变化，会决定短中期采购节奏。
+          </p>
+        </section>
+
+        <section class="reveal" id="risks" style="margin-top:14px">
+          <h3>主要风险与不确定性</h3>
+          <ul>
+            <li><strong>地缘政治与出口管制：</strong>对关键零部件或整机出口限制可能影响供应链稳定性。</li>
+            <li><strong>技术壁垒：</strong>某些核心技术（例如高 NA 光学、EUV 光源）需要长期跨学科投入。</li>
+            <li><strong>市场波动：</strong>半导体景气周期带来 CAPEX 的周期性波动，短期内可能导致订单集中或萎缩。</li>
+            <li><strong>人才与制造能力：</strong>超精密光学与真空工程等领域存在高技能人才稀缺风险。</li>
+          </ul>
+        </section>
+
+        <section class="reveal" id="forecast-recommend" style="margin-top:14px">
+          <h3>趋势展望与策略建议（概要）</h3>
+          <ol>
+            <li><strong>多层次布局：</strong>厂商与决策者应在高端研发与中低端产能之间保持平衡，分散单一风险。</li>
+            <li><strong>供应链弹性：</strong>关键零部件建立多源、模块化替代路径，同时评估本地化替代的可行性与成本。</li>
+            <li><strong>软件与计算能力：</strong>投资计算光刻、掩模优化与 AI 良率工具，以较低边际成本获得显著良率提升。</li>
+            <li><strong>长期研发投入：</strong>对高 NA、光源及掩模技术的持续投入是长期竞争力的要素。</li>
+          </ol>
+
+          <p style="margin-top:8px" class="muted">注：以上为行业观测与策略建议，具体采购与投资决策建议结合企业自身产能规划、财务状况与政策环境综合评估。</p>
+        </section>
+
+        <div style="margin-top:18px">
+          <a class="link-btn" href="index.html">返回目录</a>
+        </div>
+
+      </main>
+
+      <!-- 侧边栏 -->
+      <aside class="side" aria-labelledby="side-title">
+        <h3 id="side-title" style="margin-top:0">侧边信息 · 快速索引</h3>
+        <p class="muted">页面动画：加载 ~1s，内容逐区出现；背景为持续动态渐变。</p>
+
+        <div style="margin-top:12px">
+          <strong>快速索引</strong>
+          <ul style="padding-left:16px;margin-top:8px;color:#eaf4ff">
+            <li><a href="#overview">市场概览</a></li>
+            <li><a href="#vendor-landscape">厂商格局</a></li>
+            <li><a href="#market-size">市场规模</a></li>
+            <li><a href="#supply-chain">供给链</a></li>
+            <li><a href="#cost-breakdown">成本分解</a></li>
+            <li><a href="#risks">风险</a></li>
+            <li><a href="#forecast-recommend">趋势与建议</a></li>
+          </ul>
+        </div>
+
+        <div style="margin-top:12px">
+          <strong>参考（示例）</strong>
+          <div class="small-muted" style="margin-top:6px">
+            行业报告、学术论文与厂商白皮书（示例）：SEMI 报告、厂商技术文档、期刊论文等。
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <footer style="margin-top:22px;color:#cfe9ff">
+      © 光刻机技术知识平台 · 页面示例（含动效） · 建议结合具体数据源做财务/采购决策
+    </footer>
+  </div>
+
+  <script>
+    /* ---------- 加载动画逻辑 ---------- */
+    (function(){
+      const loader = document.getElementById('loader');
+      const contentCard = document.getElementById('content-card');
+      // 确保至少显示 800ms，通常 1000ms 体验较平滑
+      const MIN_SHOW = 850;
+      const start = Date.now();
+
+      function revealPage() {
+        // 隐藏 loader
+        loader.classList.add('hidden');
+        // 先显示主卡片
+        document.querySelectorAll('.card').forEach(el=>{
+          el.classList.add('visible');
+        });
+        // 启用滚动 reveal（IntersectionObserver）
+        setupRevealOnScroll();
+      }
+
+      function onLoaded() {
+        const elapsed = Date.now() - start;
+        const wait = Math.max(0, MIN_SHOW - elapsed);
+        setTimeout(revealPage, wait);
+      }
+
+      // 当页面资源加载完成或 DOM ready 后触发（更早触发），以减少等待
+      if (document.readyState === 'complete') {
+        onLoaded();
+      } else {
+        window.addEventListener('load', onLoaded);
+        // 额外：如果 window.load 太慢，DOMContentLoaded 也作为备选
+        document.addEventListener('DOMContentLoaded', ()=> setTimeout(onLoaded, 50));
+      }
+
+      /* 平滑锚点滚动 */
+      document.querySelectorAll('a[href^="#"]').forEach(a=>{
+        a.addEventListener('click', function(e){
+          const target = document.querySelector(this.getAttribute('href'));
+          if(target){
+            e.preventDefault();
+            target.scrollIntoView({behavior:'smooth', block:'start'});
+            history.replaceState(null, '', this.getAttribute('href'));
+          }
+        });
+      });
+
+      /* ---------- Scroll Reveal 简单实现 ---------- */
+      function setupRevealOnScroll() {
+        const items = document.querySelectorAll('.reveal');
+        const io = new IntersectionObserver(entries=>{
+          entries.forEach(entry=>{
+            if(entry.isIntersecting){
+              entry.target.classList.add('in');
+              // 可选：解除观察以减少开销
+              io.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12 });
+        items.forEach(it => io.observe(it));
+      }
+    })();
+  </script>
+</body>
+</html>
