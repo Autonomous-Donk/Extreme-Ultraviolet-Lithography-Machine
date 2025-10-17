@@ -6,41 +6,227 @@
   <title>核心技术解析 · 光刻机技术详解（2025-10-17）</title>
   <meta name="description" content="核心技术解析：光源、光学、机械控制与计算光刻。"/>
   <style>
-    body{margin:0;font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;background:#f7f9fb;color:#12263a;}
-    .wrap{max-width:1100px;margin:28px auto;padding:20px;}
-    header{display:flex;align-items:center;gap:16px;}
-    .logo{width:54px;height:54px;border-radius:10px;background:linear-gradient(135deg,#0b61ff,#6bc1ff);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;}
-    .card{background:#fff;padding:18px;border-radius:12px;margin-top:16px;box-shadow:0 8px 30px rgba(15,23,42,0.06);}
-    h2{margin-top:0;}
-    .muted{color:#6b7280;}
-    footer{margin-top:20px;color:#6b7280;font-size:13px;text-align:center;}
+    /* ---------- 基础重置与变量 ---------- */
+    :root{
+      --bg-dark: #071227;
+      --card: rgba(255,255,255,0.96);
+      --muted: #94a3b8;
+      --accent: #0b61ff;
+      --glass: rgba(255,255,255,0.06);
+      --ease: cubic-bezier(.2,.9,.3,1);
+      --maxw: 1100px;
+      --text: #0f1724;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Helvetica Neue",Arial;background:var(--bg-dark);color:var(--text);-webkit-font-smoothing:antialiased}
+    a{color:var(--accent);text-decoration:none}
+    /* ---------- 动态背景 ---------- */
+    .bg {
+      position:fixed; inset:0; z-index:-3; overflow:hidden;
+      background: radial-gradient(circle at 10% 20%, rgba(15,97,255,0.12), transparent 8%),
+                  radial-gradient(circle at 85% 80%, rgba(107,193,255,0.08), transparent 12%),
+                  linear-gradient(180deg,#071227 0%, #0a1830 60%);
+      transition: opacity 0.9s var(--ease);
+    }
+    /* 移动渐变层 */
+    .bg::before{
+      content:""; position:absolute; inset:-20%;
+      background: conic-gradient(from 90deg at 50% 50%, rgba(11,97,255,0.06), rgba(107,193,255,0.03), rgba(11,97,255,0.06));
+      filter: blur(60px) saturate(120%);
+      animation: rotateGrad 18s linear infinite;
+      opacity:0.85;
+      mix-blend-mode:screen;
+    }
+    @keyframes rotateGrad { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+    /* 轻微噪点层，保持低调 */
+    .bg .noise {
+      position:absolute; inset:0; background-image: radial-gradient(rgba(255,255,255,0.01) 1px, transparent 1px);
+      background-size: 6px 6px; opacity:0.7; mix-blend-mode:overlay;
+    }
+
+    /* ---------- 页面容器 ---------- */
+    .wrap{max-width:var(--maxw);margin:36px auto;padding:26px;position:relative;z-index:1;}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+    .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,#0b61ff,#6bc1ff);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;box-shadow:0 8px 30px rgba(11,97,255,0.16)}
+    h1{margin:0;font-size:20px;color:#e6eefc}
+    .meta{color:var(--muted);font-size:13px;margin-top:6px}
+
+    /* ---------- 页面卡片与布局 ---------- */
+    .grid{display:grid;grid-template-columns: 1fr; gap:20px; align-items:start;}
+    .card { background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.96)); border-radius:12px; padding:20px; box-shadow: 0 20px 50px rgba(2,6,23,0.4); transform-origin:center; opacity:0; transform:translateY(10px); transition: opacity 700ms var(--ease), transform 700ms var(--ease);}
+    .card.visible{opacity:1; transform:translateY(0)}
+    .side { background: rgba(255,255,255,0.04); border-radius:12px; padding:18px; color:#e8f0ff; box-shadow:0 10px 30px rgba(2,6,23,0.45) }
+
+    /* ---------- 加载覆盖层（约 1s） ---------- */
+    #loader {
+      position:fixed; inset:0; display:flex; align-items:center; justify-content:center; z-index:9999;
+      background: linear-gradient(180deg, rgba(5,10,20,0.9), rgba(5,10,20,0.85));
+      color:white; flex-direction:column;
+      transition: opacity 900ms var(--ease), visibility 900ms var(--ease);
+    }
+    #loader.hidden{opacity:0; visibility:hidden; pointer-events:none;}
+    .spinner{
+      width:56px; height:56px; border-radius:50%;
+      border:5px solid rgba(255,255,255,0.12);
+      border-top-color: #9bd4ff;
+      animation: spin 1s linear infinite;
+      box-shadow:0 8px 20px rgba(11,97,255,0.18), inset 0 -6px 12px rgba(255,255,255,0.02);
+    }
+    @keyframes spin { to{transform:rotate(360deg)} }
+
+    #loader .label{margin-top:12px;color:#bcd9ff;font-size:14px;opacity:0.95}
+
+    /* ---------- 内容样式 ---------- */
+    h2{margin:0 0 8px 0; color:#07122b}
+    h3{margin:0 0 6px 0; color:#0f2b55}
+    p{color:#153247;line-height:1.6}
+    .muted{color:var(--muted)}
+    .pill{display:inline-block;background:rgba(11,97,255,0.08);color:#08306a;padding:6px 10px;border-radius:999px;font-size:13px;margin-right:8px}
+
+    /* 响应式 */
+    @media (max-width:980px) {
+      .grid{grid-template-columns:1fr}
+      .side{order:2}
+    }
+
+    /* ---------- 小动画：段落入场（用于 scroll reveal） ---------- */
+    .reveal { opacity:0; transform: translateY(16px); transition: opacity 760ms var(--ease), transform 760ms var(--ease) }
+    .reveal.in { opacity:1; transform: translateY(0) }
+
+    /* 链接按钮 */
+    .link-btn { display:inline-block; padding:8px 12px; border-radius:8px; background:#0b61ff; color:white; font-weight:600; text-decoration:none; box-shadow:0 12px 30px rgba(11,97,255,0.12); margin-top:8px }
+    .small-muted {font-size:13px;color:var(--muted)}
+
   </style>
 </head>
 <body>
-  <div class="wrap">
+  <!-- 动态背景 -->
+  <div class="bg" aria-hidden="true">
+    <div class="noise"></div>
+  </div>
+
+  <!-- 加载层（1s 左右） -->
+  <div id="loader" role="status" aria-live="polite">
+    <div class="spinner" aria-hidden="true"></div>
+    <div class="label">正在加载 · Loading…</div>
+  </div>
+
+  <div class="wrap" id="main">
     <header>
-      <div class="logo">光刻</div>
+      <div class="logo" aria-hidden="true">光刻</div>
       <div>
-        <h1 style="margin:0;font-size:20px">核心技术解析</h1>
-        <div class="muted">页面更新：2025-10-17 · <a href="index.html">返回目录</a></div>
+        <h1>核心技术解析</h1>
+        <div class="meta">页面更新：2025-10-17 · 含动态背景与渐显动效</div>
       </div>
     </header>
 
-    <section class="card">
-      <h2>光源与光学系统</h2>
-      <p>EUV（13.5nm）为先进制程主流，DUV 与浸没式仍用于成熟工艺。High-NA 提升分辨率但带来光源亮度、掩模工艺与热稳定性等挑战。</p>
+    <nav style="margin-bottom:12px">
+      <a class="pill" href="index.html">目录</a>
+      <a class="pill" href="principle.html">基础原理</a>
+      <a class="pill" href="core.html">核心技术</a>
+      <a class="pill" href="market.html">全球格局</a>
+      <a class="pill" href="china.html">国产替代</a>
+    </nav>
 
-      <h2 style="margin-top:14px">机械与控制</h2>
-      <p>纳米级对位、环境与振动隔离、先进检测与实时反馈（对位、线宽、焦点监测）是高端光刻机的关键。</p>
+    <div class="grid">
+      <!-- 主内容 -->
+      <main class="card" id="content-card" role="main" aria-labelledby="core-title">
+        <h2 id="core-title">核心技术解析</h2>
+        
+        <section class="reveal" id="light-source">
+          <h3>光源与光学系统</h3>
+          <p>EUV（13.5nm）为先进制程主流，DUV 与浸没式仍用于成熟工艺。High-NA 提升分辨率但带来光源亮度、掩模工艺与热稳定性等挑战。</p>
+        </section>
 
-      <h2 style="margin-top:14px">计算光刻与 AI 应用</h2>
-      <p>计算光刻（Computational Lithography）与 AI 在掩模优化、曝光策略、缺陷检测与良率预测中已成为提升效率的主要手段。工业界到 2025 年广泛采用机器学习进行缺陷识别和工艺优化。</p>
+        <section class="reveal" id="mechanical-control" style="margin-top:14px">
+          <h3>机械与控制</h3>
+          <p>纳米级对位、环境与振动隔离、先进检测与实时反馈（对位、线宽、焦点监测）是高端光刻机的关键。</p>
+        </section>
 
-      <h2 style="margin-top:14px">扩展建议</h2>
-      <p class="muted">可后续加入：白皮书 PDF 下载、典型论文/专利列表、交互式示意图（SVG）或可视化图表（静态/动态）。</p>
-    </section>
+        <section class="reveal" id="computational-lithography" style="margin-top:14px">
+          <h3>计算光刻与 AI 应用</h3>
+          <p>计算光刻（Computational Lithography）与 AI 在掩模优化、曝光策略、缺陷检测与良率预测中已成为提升效率的主要手段。工业界到 2025 年广泛采用机器学习进行缺陷识别和工艺优化。</p>
+        </section>
 
-    <footer>© 2025 光刻机技术知识平台 | 页面更新时间：2025-10-17</footer>
+        <section class="reveal" id="extensions" style="margin-top:14px">
+          <h3>扩展建议</h3>
+          <p class="muted">可后续加入：白皮书 PDF 下载、典型论文/专利列表、交互式示意图（SVG）或可视化图表（静态/动态）。</p>
+        </section>
+
+        <div style="margin-top:18px">
+          <a class="link-btn" href="index.html">返回目录</a>
+        </div>
+      </main>
+    </div>
+
+    <footer style="margin-top:22px;color:#cfe9ff">
+      © 光刻机技术知识平台 · 页面示例（含动效） · 更新时间：2025-10-17
+    </footer>
   </div>
+
+  <script>
+    /* ---------- 加载动画逻辑 ---------- */
+    (function(){
+      const loader = document.getElementById('loader');
+      const contentCard = document.getElementById('content-card');
+      // 确保至少显示 800ms，通常 1000ms 体验较平滑
+      const MIN_SHOW = 850;
+      const start = Date.now();
+
+      function revealPage() {
+        // 隐藏 loader
+        loader.classList.add('hidden');
+        // 先显示主卡片
+        document.querySelectorAll('.card').forEach(el=>{
+          el.classList.add('visible');
+        });
+        // 启用滚动 reveal（IntersectionObserver）
+        setupRevealOnScroll();
+      }
+
+      function onLoaded() {
+        const elapsed = Date.now() - start;
+        const wait = Math.max(0, MIN_SHOW - elapsed);
+        setTimeout(revealPage, wait);
+      }
+
+      // 当页面资源加载完成或 DOM ready 后触发（更早触发），以减少等待
+      if (document.readyState === 'complete') {
+        onLoaded();
+      } else {
+        window.addEventListener('load', onLoaded);
+        // 额外：如果 window.load 太慢，DOMContentLoaded 也作为备选
+        document.addEventListener('DOMContentLoaded', ()=> setTimeout(onLoaded, 50));
+      }
+
+      /* 平滑锚点滚动 */
+      document.querySelectorAll('a[href^="#"]').forEach(a=>{
+        a.addEventListener('click', function(e){
+          const target = document.querySelector(this.getAttribute('href'));
+          if(target){
+            e.preventDefault();
+            target.scrollIntoView({behavior:'smooth', block:'start'});
+            history.replaceState(null, '', this.getAttribute('href'));
+          }
+        });
+      });
+
+      /* ---------- Scroll Reveal 简单实现 ---------- */
+      function setupRevealOnScroll() {
+        const items = document.querySelectorAll('.reveal');
+        const io = new IntersectionObserver(entries=>{
+          entries.forEach(entry=>{
+            if(entry.isIntersecting){
+              entry.target.classList.add('in');
+              // 可选：解除观察以减少开销
+              io.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12 });
+        items.forEach(it => io.observe(it));
+      }
+    })();
+  </script>
 </body>
 </html>
